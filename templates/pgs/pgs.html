@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %} {% extends "base.html" %}
+{% block content %}
+
+
+{% if pgs %}
+<div class="grid" id="grid"> 
+    {% for pg in pgs %}
+      <article class="card" data-id="${p.id}">
+          <div class="cover">
+              {% for pgimg in pg.images.all %}
+              <a href="{% url 'pg_detail' pg.slug %}">
+                  <img src="{{ pgimg.pg_image.url }}" alt="{{ pg.title }}">
+                </a>
+                {% endfor %}
+      <div class="pin">{{pg.address}},{{pg.city}} </div>
+    </div>
+    <div class="body">
+        <div class="title">
+            <div>
+          <h3>{{pg.title}}</h3>
+          <div class="muted">{{pg.sharing_type}}</div>
+        </div>
+        <div class="price">₹ {{pg.price_per_month}}</div>
+      </div>
+      <div class="amen">{{pg.amenities}}</div>
+      <div class="actions" style="margin-top:10px">
+          <a href="{% url 'pg_detail' pg.slug %}" class="btn btn-outline">View details</a>
+      
+        </div>
+    </div>
+</article>
+{% endfor %}
+{% else %}
+<p>No PGs found matching your search.</p>
+</div>
+{% endif %}
+
+{% endblock %} {% endcomment %}
+
+
+{% block newlink %}
+<link rel="stylesheet" href="{% static 'css/pgs.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="pgs-page">
+  <div class="container">
+    {% if pgs %}
+      <div class="grid">
+        {% for pg in pgs %}
+          <article class="card" aria-labelledby="title-{{ forloop.counter }}">
+            <a class="cover-link" href="{% url 'pg_detail' pg.slug %}">
+              <div class="cover">
+                {% if pg.images.all %}
+                  {% for pgimg in pg.images.all %}
+                    {% if forloop.first %}
+                      <img src="{{ pgimg.pg_image.url }}" alt="{{ pg.title }}">
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <img src="{% static 'images/pg-placeholder.png' %}" alt="No image">
+                {% endif %}
+              </div>
+            </a>
+
+            <div class="card-body">
+              <div class="card-top">
+                <h3 id="title-{{ forloop.counter }}">{{ pg.title }}</h3>
+                <div class="price">₹ {{ pg.price_per_month }}</div>
+              </div>
+
+              <div class="meta">
+                <span class="sharing">{{ pg.sharing_type }}</span>
+                <span class="pin">{{ pg.address }}, {{ pg.city }}</span>
+              </div>
+
+              <p class="amenities">{{ pg.amenities|default:"No amenities listed" }}</p>
+
+              <div class="card-actions">
+                <a class="button outline" href="{% url 'pg_detail' pg.slug %}">View details</a>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <p>No PGs found.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

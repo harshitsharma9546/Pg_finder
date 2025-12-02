@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <h1>{{ pg.title }}</h1>
+    <p>{{ pg.description }}</p>
+    <p>Price per month: ₹ {{ pg.price_per_month }}</p>
+    <p>Address: {{ pg.address }}, {{ pg.city }}</p>
+    <p>Sharing Type: {{ pg.sharing_type }}</p>
+    <p>Contact: {{ user.phone }}</p>
+    <div>
+        <h2>Images</h2>
+        {% for image in pg.images.all %}
+            <img src="{{ image.pg_image.url }}" alt="Image of {{ pg.title }}" style="max-width: 300px; margin: 10px;">
+        {% endfor %}
+    </div>
+    <div>
+        <h2>Amenities</h2>
+        <ul>
+            {{pg.amenities }}
+        </ul>
+        <div>
+
+            <h2>owner info:</h2>
+            {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="Profile picture of {{ user.first_name }}" style="max-width: 150px; max-height: 150px; border-radius: 40%;">
+            {% else %}
+            
+            {% endif %}
+            <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Phone: {{ user.phone }}</p>
+            <p>Address: {{ user.address }}</p>
+            <p>Gender: {{user.gender}}</p>
+            
+        </div>
+    </div>
+
+{% endblock %}

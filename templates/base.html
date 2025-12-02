@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}PG Finder • Simple & Fast{% endblock %}</title>
+  <meta name="description" content="Find PGs near your college or office — filters, favorites, quick contact." />
+  {% block link %}
+  <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+  {% endblock %}
+  {% block newlink %}{% endblock %}
+
+</head>
+<body>
+
+{% include "includes/nav.html" %}
+
+{% block content %}{% endblock %}
+
+{% comment %} {% include "includes/footer.html" %} {% endcomment %}
+</body>
+</html>

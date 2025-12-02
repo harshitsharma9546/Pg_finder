@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+  <title>Dashboard Product Detail</title>
+  {% block newlink %}
+  <link rel="stylesheet" href="{% static 'css/pg-specification.css' %}">
+  {% endblock %}
+{% block content %}
+<!-- FIXED FILTER BAR -->
+<div class="filter-bar fixed">
+  <div class="filter-wrapper">
+
+       <!-- Search Bar -->
+       <form action="{% url 'search' %}">
+         <input type="text" name="keyword" placeholder="Search PG or Hostel..." class="search-bar" />
+       <button class="search-btn">Search</button>
+
+       </form>
+      
+    </div>
+  </div>
+  
+<!-- MAIN CONTENT -->
+<div class="main-container">
+  <div class="dashboard-card">
+    <!-- LEFT: IMAGE SECTION -->
+    <div class="card-left">
+      <div class="image-container">
+        <!-- MAIN IMAGE -->
+        <div class="main-image-wrapper">
+          {% if pg.images.all %}
+            {% for pgimg in pg.images.all %}
+              {% if forloop.first %}
+                <img id="mainProductImg" class="main-img" 
+                     src="{{ pgimg.pg_image.url }}" 
+                     alt="{{ pg.title }}">
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <img id="mainProductImg" class="main-img" 
+                 src="{% static 'images/pg-placeholder.png' %}" 
+                 alt="No image available">
+          {% endif %}
+        </div>
+        <!-- THUMBNAILS VERTICAL -->
+        <div class="thumb-column">
+          {% if pg.images.all %}
+            {% for pgimg in pg.images.all %}
+              <img src="{{ pgimg.pg_image.url }}" 
+                   data-large="{{ pgimg.pg_image.url }}" 
+                   alt="{{ pg.title }}"
+                   class="thumbnail {% if forloop.first %}active-thumb{% endif %}">
+            {% endfor %}
+          {% else %}
+            {% comment %} <img src="{% static 'images/pg-placeholder.png' }"  
+                 data-large="{% static 'images/pg-placeholder.png' }" 
+                 alt="No image available"
+                 class="thumbnail active-thumb"> {% endcomment %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+        <!-- RIGHT -->
+        <div class="card-right">
+          <h1>{{ pg.title }} | {{ pg.address }} | {{pg.state}} </h1>
+          <div class="rating-row">
+            <span class="rating">4.2 ★</span>
+            <span class="rating-count">67,310 Ratings & 3,748 Reviews</span>
+          </div>
+          <hr>
+          <div class="price-row">
+            <span class="price">₹{{ pg.price_per_month }} /month</span>
+            <span class="mrp">₹{{mrp}} /month</span>
+          <span class="off">{{off}}% off</span>
+        </div>
+        <ul class="offers">
+          <li>24 X 7 Water Supply</li>
+          <li>Electricity Bill Included</li>
+          <li>Cleaning Major</li>
+          <li>Specially No Night Entry</li>
+          <li>Wifi Available As Per Requirements</li>
+        </ul>
+        <hr>
+        <div class="btn-row">
+          <button class="btn btn-secondary">Visit Later</button>
+          <button class="btn btn-primary">Book Now</button>
+        </div>
+        <hr>
+        <div class="specs">
+          <h3>Specifications</h3>
+          <table>
+            <tr><td>Type</td><td>2BHK Apartment</td></tr>
+            <tr><td>Furnishing</td><td>Fully Furnished</td></tr>
+            <tr><td>Available From</td><td>Immediate</td></tr>
+            <tr><td>Lease Duration</td><td>11 Months</td></tr>
+            <tr><td>Security Deposit</td><td>₹12,498</td></tr>
+            <tr><td>Floor Number</td><td>3rd Floor</td></tr>
+            <tr><td>Total Floors in Building</td><td>5 Floors</td></tr>
+            <tr><td>Preferred Tenant</td><td>Bachelor, Family, Working Professionals, Students</td></tr>
+          </table>
+        </div>
+        <div class="specs">
+          <h3>Description</h3>
+          <p>
+{{ pg.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- JS THUMBNAIL -->
+  <script>
+    // Thumbnail click handler: updates main image and active thumbnail state
+    (function () {
+      const mainImg = document.getElementById('mainProductImg');
+      const thumbs = document.querySelectorAll('.thumb-column img');
+      if (!mainImg || thumbs.length === 0) return;
+      thumbs.forEach(t => {
+        t.addEventListener('click', function () {
+          const large = this.dataset.large || this.src;
+          mainImg.src = large;
+          // active class
+          thumbs.forEach(x => x.classList.remove('active-thumb'));
+          this.classList.add('active-thumb');
+        });
+      });
+    })();
+  </script>
+  
+  {% endblock %}
+

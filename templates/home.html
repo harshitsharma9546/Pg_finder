@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block newlink %}
+<link rel="stylesheet" href="{%static 'css/dashboard.css'%}">
+{% endblock %}
+  {% block content %}
+
+  <!-- FIXED FILTER BAR -->
+  <div class="filter-bar fixed">
+    <div class="filter-wrapper">
+      <h1>Find your perfect PG near college or office</h1>
+
+      <!-- Search Bar -->
+       <form action="{% url 'search' %}">
+         <input type="text" name="keyword" placeholder="Search PG or Hostel..." class="search-bar" />
+       <button class="search-btn">Search</button>
+
+       </form>
+
+    <button class="filter-toggle">🔽 Filter Options</button>
+
+    <div class="filter-dropdown">
+      <form>
+        <div class="filter-row">
+          <div>
+            <label>Location:</label>
+            <select>
+              <option>All</option>
+              <option>Delhi</option>
+              <option>Mumbai</option>
+              <option>Bangalore</option>
+              <option>Lucknow</option>
+            </select>
+          </div>
+          
+          <div>
+            <label>Price Range:</label>
+            <select>
+              <option>All</option>
+              <option>Below ₹5000</option>
+              <option>₹5000 - ₹8000</option>
+              <option>Above ₹8000</option>
+            </select>
+          </div>
+          
+          <div>
+            <label>Room Type:</label>
+            <select>
+              <option>All</option>
+              <option>Single</option>
+              <option>Double</option>
+              <option>Triple</option>
+            </select>
+          </div>
+          
+          <button type="submit">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE SLIDER -->
+<section class="slider-section">
+  <div class="slider">
+    <div class="slides">
+      <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=870" alt="PG 1">
+      <img src="https://plus.unsplash.com/premium_photo-1661929519129-7a76946c1d38?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1074" alt="PG 2">
+      <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170" alt="PG 3">
+      <img src="https://plus.unsplash.com/premium_photo-1661964402307-02267d1423f5?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1073" alt="PG 4">
+      <img src="https://images.unsplash.com/photo-1445991842772-097fea258e7b?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170" alt="PG 5">
+    </div>
+    
+    <!-- Arrows -->
+    <button class="arrow prev">&#10094;</button>
+    <button class="arrow next">&#10095;</button>
+    
+    <!-- Dots -->
+    <div class="dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- DASHBOARD CONTENT -->
+<section class="dashboard-content">
+  <h2>🔥 Trending Hostels & PGs</h2>
+  
+  <div class="cards-container">
+    <!-- CARD 1 -->
+     {% for pg in pg_listings %}
+    <div class="card">
+      {% for pgimg in pg.images.all|slice:":1" %}
+      <img src="{{ pgimg.pg_image.url }}" alt="Hostel 1" />
+      {% endfor %}
+      <h3>{{pg.title}}</h3>
+      <div class="rating">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
+        <span class="rating-number">(4.0)</span>
+      </div>
+      <p>Located in {{pg.city}} • ₹6500/month</p>
+      <a href="{% url 'pg_detail' pg.slug %}">Book Now</a>
+      
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+<script src="{% static "js/dashboard.js" %}"></script>
+{% endblock %}
