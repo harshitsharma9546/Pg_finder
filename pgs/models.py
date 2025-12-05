@@ -42,3 +42,34 @@ class PGImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.pg.title}"
+
+
+class Booking(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending Payment'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled'),
+        ('completed', 'Completed'),
+    ]
+    
+    tenant = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='bookings')
+    pg = models.ForeignKey(PgListing, on_delete=models.CASCADE, related_name='bookings')
+    booking_date = models.DateTimeField(auto_now_add=True)
+    check_in_date = models.DateField()
+    check_out_date = models.DateField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    visit_later = models.BooleanField(default=False)
+    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+    phonepe_upi = models.CharField(max_length=100, blank=True, null=True)
+    payment_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_confirmed_date = models.DateTimeField(blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-booking_date']
+    
+    def __str__(self):
+        return f"Booking by {self.tenant.username} for {self.pg.title}"

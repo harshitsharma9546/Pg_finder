@@ -14,4 +14,8 @@ urlpatterns = [
 
 
   path('terms-and-conditions/', views.terms_conditions, name='terms_conditions'),
+  path('my-profile/', views.my_profile, name='my_profile'),
+  path('my-bookings/', views.my_bookings, name='my_bookings'),
+  path('settings/', views.settings_view, name='settings'),
+  path('help-support/', views.help_support, name='help_support'),
 ]

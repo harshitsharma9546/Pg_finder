@@ -6,15 +6,15 @@
   <ul class="nav-links">
     {% if user.is_authenticated %}
       <li><a href="{% url 'home'%}">Home</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
       <li><a href="#">Visit</a></li>
       
       <!-- User Profile Section -->
       <li class="user-profile">
         <div class="profile-container" id="profileToggle">
-          {% if user.profile.profile_image %}
-            <img src="{{ user.profile.profile_image.url }}" alt="Profile" class="profile-img">
+          {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="Profile" class="profile-img">
           {% else %}
             <img src="{% static 'images/user.png' %}" alt="Profile" class="profile-img">
           {% endif %}
@@ -24,8 +24,8 @@
         <!-- Sidebar Dropdown -->
         <div class="profile-sidebar" id="profileSidebar">
           <div class="sidebar-header">
-            {% if user.profile.profile_image %}
-              <img src="{{ user.profile.profile_image.url }}" alt="Profile" class="sidebar-profile-img">
+            {% if user.profile_image %}
+              <img src="{{ user.profile_image.url }}" alt="Profile" class="sidebar-profile-img">
             {% else %}
               <img src="{% static 'images/user.png' %}" alt="Profile" class="sidebar-profile-img">
             {% endif %}
@@ -38,10 +38,14 @@
           <hr>
           
           <ul class="sidebar-menu">
-            <li><a href="#">My Profile</a></li>
-            <li><a href="#">My Bookings</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Help & Support</a></li>
+            <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+            <li>
+              <a href="{% url 'my_bookings_list' %}" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>My Bookings</span>
+              </a>
+            </li>
+            <li><a href="{% url 'settings' %}">Settings</a></li>
+            <li><a href="{% url 'help_support' %}">Help & Support</a></li>
           </ul>
           
           <hr>
@@ -52,6 +56,7 @@
         </div>
       </li>
     {% else %}
+      <li><a href="{% url 'about' %}">About</a></li>
       <li><a href="{%url 'user_login'%}">Login</a></li>
       <li><a href="{%url 'signup'%}">Signup</a></li>
     {% endif %}

@@ -31,6 +31,8 @@ admin.site.index_title = "Welcome to Admin Portal"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home , name='home'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
     path('user/', include('users.urls')),
     path('pgs/', include('pgs.urls')),
     

@@ -285,3 +285,111 @@ def resetPassword(request):
 # ---------------------- TERMS ---------------------------
 def terms_conditions(request):
     return render(request, 'users/terms&conditions.html')
+
+
+# ---------------------- DASHBOARD: MY PROFILE ---------------------------
+def my_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    user = request.user
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', user.first_name)
+        last_name = request.POST.get('last_name', user.last_name)
+        phone = request.POST.get('phone', user.phone)
+        gender = request.POST.get('gender', user.gender)
+        dob = request.POST.get('date_of_birth', user.date_of_birth)
+        address = request.POST.get('address', user.address)
+        city = request.POST.get('city', user.city)
+        state = request.POST.get('state', user.state)
+        pin_code = request.POST.get('pin_code', user.pin_code)
+        profile_image = request.FILES.get('profile_image')
+
+        # Update user fields
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone = phone
+        user.gender = gender
+        if dob:
+            user.date_of_birth = dob
+        user.address = address
+        user.city = city
+        user.state = state
+        user.pin_code = pin_code
+        if profile_image:
+            user.profile_image = profile_image
+
+        user.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect('my_profile')
+
+    context = {'user_obj': user, 'page': 'profile'}
+    return render(request, 'users/dashboard/my_profile.html', context)
+
+
+# ---------------------- DASHBOARD: MY BOOKINGS ---------------------------
+def my_bookings(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    # Placeholder: integrate with your booking model later
+    bookings = []
+    context = {'bookings': bookings, 'page': 'bookings'}
+    return render(request, 'users/dashboard/my_bookings.html', context)
+
+
+# ---------------------- DASHBOARD: SETTINGS ---------------------------
+def settings_view(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    user = request.user
+
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not old_password or not new_password or not confirm_password:
+            messages.error(request, "All password fields are required")
+            return redirect('settings')
+
+        if not user.check_password(old_password):
+            messages.error(request, "Old password is incorrect")
+            return redirect('settings')
+
+        if new_password != confirm_password:
+            messages.error(request, "New passwords do not match")
+            return redirect('settings')
+
+        if len(new_password) < 6:
+            messages.error(request, "Password must be at least 6 characters")
+            return redirect('settings')
+
+        user.set_password(new_password)
+        user.save()
+        auth.login(request, user)  # Re-login to keep session active
+        messages.success(request, "Password changed successfully!")
+        return redirect('settings')
+
+    context = {'user_obj': user, 'page': 'settings'}
+    return render(request, 'users/dashboard/settings.html', context)
+
+
+# ---------------------- DASHBOARD: HELP & SUPPORT ---------------------------
+def help_support(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    faqs = [
+        {'q': 'How do I search for PGs?', 'a': 'Use the search bar on the home page to filter PGs by location, price range, and amenities.'},
+        {'q': 'How do I book a PG?', 'a': 'Click on a PG listing and use the contact form to reach out to the owner directly.'},
+        {'q': 'Can I change my profile information?', 'a': 'Yes, visit My Profile to update your personal details anytime.'},
+        {'q': 'How do I reset my password?', 'a': 'Click "Forgot Password" on the login page and follow the email instructions.'},
+        {'q': 'Is my data secure?', 'a': 'Yes, we use secure encryption and do not share your data with third parties.'},
+    ]
+
+    context = {'faqs': faqs, 'page': 'help'}
+    return render(request, 'users/dashboard/help_support.html', context)
+

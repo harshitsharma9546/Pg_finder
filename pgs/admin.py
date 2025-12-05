@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PgListing, PGImage
+from .models import PgListing, PGImage, Booking
 # Register your models here.
 
 class PgListingAdmin(admin.ModelAdmin):
@@ -12,6 +12,14 @@ class PgListingAdmin(admin.ModelAdmin):
 
 class PGImageAdmin(admin.ModelAdmin):
     list_display = ('pg', 'uploaded_at',)
-     
+
+class BookingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'tenant', 'pg', 'amount', 'status', 'booking_date', 'visit_later')
+    list_filter = ('status', 'booking_date', 'visit_later')
+    search_fields = ('tenant__username', 'pg__title', 'id')
+    readonly_fields = ('booking_date', 'qr_code')
+    
 admin.site.register(PgListing,PgListingAdmin)
 admin.site.register(PGImage, PGImageAdmin)
+admin.site.register(Booking, BookingAdmin)
+

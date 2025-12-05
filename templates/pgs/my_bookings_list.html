@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #1e1f3d 0%, #2d2e4f 100%);
+    min-height: 100vh;
+  }
+  
+  .bookings-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+  
+  .bookings-header {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+  }
+  
+  .bookings-header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .bookings-header p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+  }
+  
+  .bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+  
+  .booking-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+  }
+  
+  .booking-card-header {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    color: white;
+    padding: 20px;
+  }
+  
+  .booking-card-header h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+  }
+  
+  .booking-card-header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+  
+  .booking-card-body {
+    padding: 20px;
+  }
+  
+  .booking-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .booking-info label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+  }
+  
+  .booking-info value {
+    color: #666;
+    font-size: 0.95rem;
+  }
+  
+  .booking-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #00d4ff;
+    margin: 15px 0;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 10px 0;
+  }
+  
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-confirmed {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  
+  .booking-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .btn-action {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-view {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    color: white;
+  }
+  
+  .btn-view:hover {
+    transform: scale(1.05);
+  }
+  
+  .btn-cancel {
+    background: #f0f0f0;
+    color: #333;
+    border: 2px solid #ddd;
+  }
+  
+  .btn-cancel:hover {
+    background: #e0e0e0;
+  }
+  
+  .no-bookings {
+    background: white;
+    border-radius: 12px;
+    padding: 60px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .no-bookings h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+  }
+  
+  .no-bookings p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.05rem;
+  }
+  
+  .btn-explore {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-explore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+  }
+  
+  .alert {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+  
+  @media (max-width: 768px) {
+    .bookings-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .bookings-header h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<div class="bookings-container">
+  <div class="bookings-header">
+    <h1>📚 My Bookings</h1>
+    <p>Manage and track all your PG bookings here</p>
+  </div>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  
+  {% if bookings %}
+    <div class="bookings-grid">
+      {% for booking in bookings %}
+        <div class="booking-card">
+          <div class="booking-card-header">
+            <h3>{{ booking.pg.title }}</h3>
+            <p>📍 {{ booking.pg.city }}, {{ booking.pg.state }}</p>
+          </div>
+          
+          <div class="booking-card-body">
+            <div class="booking-info">
+              <label>Booking ID:</label>
+              <value>#{{ booking.id }}</value>
+            </div>
+            
+            <div class="booking-info">
+              <label>Booking Date:</label>
+              <value>{{ booking.booking_date|date:"d-M-Y" }}</value>
+            </div>
+            
+            <div class="booking-info">
+              <label>Check-in:</label>
+              <value>{{ booking.check_in_date|date:"d-M-Y" }}</value>
+            </div>
+            
+            <div class="booking-info">
+              <label>Type:</label>
+              <value>{{ booking.pg.sharing_type }} Sharing</value>
+            </div>
+            
+            <div class="booking-amount">
+              ₹{{ booking.amount }}/month
+            </div>
+            
+            {% if booking.status == 'pending' %}
+              <span class="status-badge status-pending">
+                ⏳ Pending Payment
+              </span>
+            {% elif booking.status == 'confirmed' %}
+              <span class="status-badge status-confirmed">
+                ✅ Confirmed
+              </span>
+            {% elif booking.status == 'cancelled' %}
+              <span class="status-badge status-cancelled">
+                ❌ Cancelled
+              </span>
+            {% endif %}
+            
+            {% if booking.status == 'confirmed' %}
+              <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 0.9rem;">
+                ✅ Payment confirmed on {{ booking.payment_confirmed_date|date:"d-M-Y H:i" }}
+              </div>
+            {% endif %}
+            
+            <div class="booking-actions">
+              <a href="{% url 'booking_confirmation' booking.id %}" class="btn-action btn-view">
+                View Details
+              </a>
+              {% if booking.status == 'pending' %}
+                <a href="{% url 'booking_confirmation' booking.id %}" class="btn-action btn-cancel" style="background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: white;">
+                  Pay Now
+                </a>
+              {% endif %}
+
+              {% if booking.status != 'cancelled' %}
+                <form method="POST" action="{% url 'cancel_booking' booking.id %}" style="margin:0;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-action btn-cancel" style="background:#ff6b6b; color:white; border:none;">Cancel Booking</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-bookings">
+      <h2>No Bookings Yet! 🏠</h2>
+      <p>You haven't made any bookings yet. Start exploring PGs and make your first booking today!</p>
+      <a href="{% url 'pgs' %}" class="btn-explore">Explore PGs</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

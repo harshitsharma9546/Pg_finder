@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fa;
+  }
+
+  .sidebar {
+    width: 250px;
+    background: linear-gradient(135deg, #1e1f3d 0%, #2d2e4f 100%);
+    color: white;
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 0 20px 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .sidebar-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #00d4ff;
+    object-fit: cover;
+    margin: 0 auto 15px;
+    display: block;
+  }
+
+  .sidebar-name {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 10px 0 5px;
+  }
+
+  .sidebar-email {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+  }
+
+  .sidebar-menu li {
+    margin: 0;
+  }
+
+  .sidebar-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+  }
+
+  .sidebar-menu a:hover,
+  .sidebar-menu a.active {
+    background: rgba(0,212,255,0.1);
+    color: #00d4ff;
+    border-left-color: #00d4ff;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #ffc107;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .badge.confirmed {
+    background: #28a745;
+    color: white;
+  }
+
+  .main-content {
+    margin-left: 250px;
+    flex: 1;
+    padding: 30px;
+  }
+
+  .content-header {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .content-header h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #1e1f3d;
+  }
+
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+
+  .faq-item {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-q {
+    font-weight: 700;
+    color: #1e1f3d;
+    font-size: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-q:hover {
+    color: #00d4ff;
+  }
+
+  .faq-a {
+    color: #666;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .faq-a.show {
+    display: block;
+  }
+
+  .contact-section {
+    background: linear-gradient(135deg, #1e1f3d 0%, #2d2e4f 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-top: 30px;
+  }
+
+  .contact-section h3 {
+    margin-top: 0;
+  }
+
+  .contact-item {
+    margin: 15px 0;
+  }
+
+  .contact-item strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .contact-item a {
+    color: #00d4ff;
+    text-decoration: none;
+  }
+
+  .contact-item a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-container {
+      flex-direction: column;
+    }
+
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+</style>
+
+<div class="dashboard-container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      {% if user.profile_image %}
+        <img src="{{ user.profile_image.url }}" alt="Avatar" class="sidebar-avatar">
+      {% else %}
+        <img src="{% static 'images/user.png' %}" alt="Avatar" class="sidebar-avatar">
+      {% endif %}
+      <div class="sidebar-name">{{ user.first_name }} {{ user.last_name }}</div>
+      <div class="sidebar-email">{{ user.email }}</div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="{% url 'my_profile' %}" class="{% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}"><span>👤 My Profile</span></a></li>
+      <li><a href="{% url 'my_bookings_list' %}" class="{% if request.resolver_match.url_name == 'my_bookings_list' %}active{% endif %}">
+        <span>📚 My Bookings</span>
+        <div style="display: flex; gap: 6px;">
+          {% if pending_bookings_count %}
+            <span class="badge">⏳ {{ pending_bookings_count }}</span>
+          {% endif %}
+          {% if confirmed_bookings_count %}
+            <span class="badge confirmed">✅ {{ confirmed_bookings_count }}</span>
+          {% endif %}
+        </div>
+      </a></li>
+      <li><a href="{% url 'settings' %}" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}"><span>⚙️ Settings</span></a></li>
+      <li><a href="{% url 'help_support' %}" class="{% if request.resolver_match.url_name == 'help_support' %}active{% endif %}"><span>❓ Help & Support</span></a></li>
+      <li><a href="{% url 'user_logout' %}" style="color: #ff6b6b;"><span>🚪 Logout</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="content-header">
+      <h2>Help & Support</h2>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top: 0; color: #1e1f3d;">Frequently Asked Questions</h3>
+
+      {% for faq in faqs %}
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFAQ(this)">
+            <span>{{ faq.q }}</span>
+            <span style="font-size: 20px;">+</span>
+          </div>
+          <div class="faq-a">
+            {{ faq.a }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card contact-section">
+      <h3>Need More Help?</h3>
+      <p>We're here to help! If you have any questions or issues, feel free to contact us:</p>
+      
+      <div class="contact-item">
+        <strong>Email:</strong>
+        <a href="mailto:support@e-hostelpg.com">support@e-hostelpg.com</a>
+      </div>
+      
+      <div class="contact-item">
+        <strong>Phone:</strong>
+        <a href="tel:+919876543210">+91 9876 543 210</a>
+      </div>
+      
+      <div class="contact-item">
+        <strong>Live Chat:</strong>
+        <p>Available Monday - Friday, 9AM - 6PM IST</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleFAQ(element) {
+    const answer = element.nextElementSibling;
+    const icon = element.querySelector('span:last-child');
+    
+    answer.classList.toggle('show');
+    icon.textContent = answer.classList.contains('show') ? '−' : '+';
+  }
+</script>
+
+{% endblock %}

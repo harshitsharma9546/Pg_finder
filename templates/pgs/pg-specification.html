@@ -83,8 +83,16 @@
         </ul>
         <hr>
         <div class="btn-row">
-          <button class="btn btn-secondary">Visit Later</button>
-          <button class="btn btn-primary">Book Now</button>
+          <form method="POST" action="{% url 'book_pg' pg_slug=pg.slug %}" style="display:inline; width: 48%;">
+            {% csrf_token %}
+            <input type="hidden" name="visit_later" value="1">
+            <button type="submit" class="btn btn-secondary" style="width:100%;">Visit Later</button>
+          </form>
+          <form method="POST" action="{% url 'book_pg' pg_slug=pg.slug %}" style="display:inline; width: 48%; margin-left: 4%;">
+            {% csrf_token %}
+            <input type="hidden" name="visit_later" value="0">
+            <button type="submit" class="btn btn-primary" style="width:100%;">Book Now</button>
+          </form>
         </div>
         <hr>
         <div class="specs">
